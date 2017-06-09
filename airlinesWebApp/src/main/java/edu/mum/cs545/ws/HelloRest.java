@@ -9,6 +9,7 @@ import javax.ws.rs.QueryParam;
 
 import cs545.airline.model.Airline;
 import cs545.airline.service.AirlineService;
+import com.google.gson.*;
 
 @Named
 @Path("hello")
@@ -19,18 +20,21 @@ public class HelloRest {
 
 	@GET
 	public String helloWorld(@DefaultValue("Gorgeous") @QueryParam("name") String name) {
-		return "Hello " + name + "!";
+		//airlineService = new AirlineService();
+		//Gson gson = new Gson();
+		//gson.toJson(airlineService.findByName(name));
+		return "Hello " + name + "! ";// + gson.toJson(airlineService.findByName("oneworld"));
 	}
 
 	@Path("airline")
 	@GET
-	public String getAirlineTest() {
+	public String getAirlineTest( @QueryParam("airplane") String name) {
 		String result = "Nil!";
 		Airline airline = airlineService.findByName("oneworld");
 		if (airline != null) {
 			result = "This is an airline: " + airline.getName();
 		}
-		return result;
+		return result;//(new Gson().toJson(airlineService.findByName("oneworld")));
 	}
 
 }

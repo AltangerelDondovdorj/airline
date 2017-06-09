@@ -8,6 +8,8 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import javax.transaction.Transactional;
 
+import org.eclipse.persistence.oxm.MediaType;
+
 import cs545.airline.dao.FlightDao;
 import cs545.airline.model.Airline;
 import cs545.airline.model.Airplane;
@@ -75,7 +77,7 @@ public class FlightService {
 	public List<Flight> findByDepartureBetween(Date datetimeFrom, Date datetimeTo) {
 		return flightDao.findByDepartureBetween(datetimeFrom, datetimeFrom, datetimeTo, datetimeTo);
 	}
-
+	
 	public List<Flight> findAll() {
 		return flightDao.findAll();
 	}
