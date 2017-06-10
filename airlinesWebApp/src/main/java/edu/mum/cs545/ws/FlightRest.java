@@ -16,6 +16,7 @@ import cs545.airline.model.Airline;
 import cs545.airline.model.Airplane;
 import cs545.airline.model.Airport;
 import cs545.airline.model.Flight;
+import cs545.airline.service.AirlineService;
 import cs545.airline.service.FlightService;
 
 @Named
@@ -24,6 +25,7 @@ public class FlightRest {
 	
 	@Inject
 	private FlightService flightService;
+	private AirlineService airlineService;
 	
 	@GET
 	@Path("/all")
@@ -67,10 +69,9 @@ public class FlightRest {
 	@GET
 	@Path("/findByAirline")
 	@Produces(MediaType.APPLICATION_JSON)
-	public List<Flight> findByAirline(@QueryParam("airlineId") long airlineId) {
-		Airline airline = new Airline();
-		airline.setId(airlineId);
-		return flightService.findByAirline(airline);
+	public List<Flight> findByAirline(@QueryParam("name") String name) {
+		
+		return flightService.findByAirline(airlineService.findByName("oneworld"));
 	}
 	@GET
 	@Path("/findByOrigin")
