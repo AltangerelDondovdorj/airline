@@ -5,6 +5,8 @@ import java.util.List;
 
 import javax.inject.Inject;
 import javax.inject.Named;
+import javax.jws.WebParam;
+import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -25,6 +27,7 @@ public class FlightRest {
 	
 	@Inject
 	private FlightService flightService;
+	@Inject
 	private AirlineService airlineService;
 	
 	@GET
@@ -36,18 +39,15 @@ public class FlightRest {
 	
 	@POST
 	@Path("/create")
-	public void create( @QueryParam("flightnr") String flightnr, 
-			@QueryParam("departureDate") String departureDate,
-			@QueryParam("departureTime") String departureTime,
-			@QueryParam("arrivalDate") String arrivalDate,
-			@QueryParam("arrivalTime") String arrivalTime) {
-		Flight flight = new Flight(flightnr, departureDate, departureTime, arrivalDate, arrivalTime);
-		flightService.create(flight);
+	@Consumes("application/json")
+	public void create( final Flight flight){
+		System.out.println("hello arrival date = " + flight.getArrivalDate());
+		//flightService.create(flight);
 	}
 
-	public void delete(Flight flight) {
+	/*public void delete(Flight flight) {
 		flightService.delete(flight);
-	}
+	}*/
 
 	public Flight update(Flight flight) {
 		return flightService.update(flight);
@@ -70,8 +70,15 @@ public class FlightRest {
 	@Path("/findByAirline")
 	@Produces(MediaType.APPLICATION_JSON)
 	public List<Flight> findByAirline(@QueryParam("name") String name) {
-		
-		return flightService.findByAirline(airlineService.findByName("oneworld"));
+		Airline airline = null;
+		try{
+		    airline = airlineService.findByName(name);
+		}
+		catch(Exception ex){
+			System.out.println(ex.getMessage());
+		}
+		if(airline != null) return flightService.findByAirline(airline);
+		return flightService.findAll();
 	}
 	@GET
 	@Path("/findByOrigin")
@@ -91,14 +98,6 @@ public class FlightRest {
 	}
 	@GET
 	@Path("/findByArrival")
-	@Produces(MediaType.APPLICATION_JSON)
-	public List<Flight> findByArrival(@QueryParam("airplaneId") long airplaneId) {
-		Airplane airplane = new Airplane();
-		airplane.setId(airplaneId);
-		return flightService.findByArrival(airplane);
-	}
-	@GET
-	@Path("/findByArrivalByDate")
 	@Produces(MediaType.APPLICATION_JSON)
 	public List<Flight> findByArrival(@QueryParam("datetime") Date datetime) {
 		return flightService.findByArrival(datetime);
