@@ -1,5 +1,7 @@
 package edu.mum.cs545.ws;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
@@ -7,6 +9,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import javax.jws.WebParam;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -99,16 +102,26 @@ public class FlightRest {
 	@GET
 	@Path("/findByArrival")
 	@Produces(MediaType.APPLICATION_JSON)
-	public List<Flight> findByArrival(@QueryParam("datetime") Date datetime) {
-		return flightService.findByArrival(datetime);
+	public List<Flight> findByArrival(@QueryParam("datetime") String datetime) {
+		
+		Date date1;
+		try {
+			date1 = new SimpleDateFormat("MM/dd/yyyy").parse(datetime);
+			return flightService.findByArrival(date1);
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return flightService.findAll();
 	}
 	@GET
 	@Path("/findByArrivalBetween")
 	@Produces(MediaType.APPLICATION_JSON)
 	public List<Flight> findByArrivalBetween(
-			@QueryParam("datetimeFrom") Date datetimeFrom, 
-			@QueryParam("datetimeTo") Date datetimeTo) {
-		return flightService.findByArrivalBetween(datetimeFrom, datetimeTo);
+			@DefaultValue("") @QueryParam("datetimeFrom") String datetimeFrom) {
+		
+		return flightService.findAll();
 	}
 	@GET
 	@Path("/findByDeparture")

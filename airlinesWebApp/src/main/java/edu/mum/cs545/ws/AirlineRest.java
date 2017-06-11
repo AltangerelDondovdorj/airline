@@ -48,13 +48,6 @@ public class AirlineRest {
 		return airlineService.findAll();
 	}
 	
-	@GET
-	@Path("/airplanes")
-	@Produces(MediaType.APPLICATION_JSON)
-	public List<Airplane> getAirplanes() {
-		return airplaneService.findAll();
-	}
-	
 	@Path("create")
 	@GET
 	public boolean createAirline(@QueryParam("name") String name){
@@ -67,9 +60,10 @@ public class AirlineRest {
 	
 	@Path("delete")
 	@GET
-	public boolean deleteAirline(@QueryParam("name") String name){
+	public boolean deleteAirline(@QueryParam("id") String id){
 		
-		Airline airport = new Airline(name);
+		Airline airport = new Airline();
+		airport.setId(Long.parseLong(id));
 		airlineService.delete(airport);
 		
 		return true;
@@ -77,9 +71,12 @@ public class AirlineRest {
 	
 	@Path("update")
 	@GET
-	public boolean updateAirline(@QueryParam("name") String name){
+	public boolean updateAirline(
+			@QueryParam("old") String old,
+			@QueryParam("new") String newName){
 		
-		Airline airport = new Airline(name);
+		Airline airport = airlineService.findByName(old);
+		airport.setName(newName);
 		airlineService.update(airport);
 		
 		return true;
